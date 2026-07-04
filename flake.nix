@@ -20,7 +20,6 @@
         nixos-hardware.nixosModules.pine64-rockpro64
         
         ./configuration.nix        
-        ./hardware-configuration.nix
       ];
     };
   };

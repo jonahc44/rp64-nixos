@@ -16,6 +16,9 @@
   boot.loader.efi.canTouchEfiVariables = false;
   boot.loader.grub.enable = false;
   boot.kernelPackages = pkgs.linuxPackages;
+  # Temporary
+  boot.initrd.systemd.enable = true;
+  boot.initrd.systemd.emergencyAccess = true;
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.interfaces.end0.useDHCP = true;
@@ -93,9 +96,11 @@
 
   # Setting up ephemeral root
   environment.persistence."/nix/persist" = {
-    hideMounts = true;
+    hideMounts = false;
     directories = [
       "/var/log"
+      "/var/lib/nixos"
+      "/var/lib/systemd/coredump"
       "/etc/NetworkManager/system-connections"
     ];
     files = [
