@@ -1,6 +1,11 @@
 {
   description = "NixOS configuration for RockPro64";
 
+  nixConfig = {
+    extra-substituters = [ "https://jonahc44.cachix.org" ];
+    extra-trusted-public-keys = [ "jonahc44.cachix.org-1:B1DPvVmdi5h1TGUNCFLbG8BxO9cHtu8rOLTdfjPjwbk=" ];
+  };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     impermanence.url = "github:nix-community/impermanence";
