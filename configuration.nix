@@ -76,6 +76,8 @@
     initialPassword = "password";
   };
 
+  nix.settings.trusted-users = [ "root" "jonah" ];
+
   # programs.firefox.enable = true;
 
   # List packages installed in system profile.
