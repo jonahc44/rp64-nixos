@@ -13,8 +13,10 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelPackages = pkgs.linuxPackages;
 
-  # networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "nixos"; # Define your hostname.
+  # networking.interfaces.end0.useDHCP = true;
 
   # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true;
@@ -59,22 +61,35 @@
   # services.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  # users.users.alice = {
-  #   isNormalUser = true;
-  #   extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-  #   packages = with pkgs; [
-  #     tree
-  #   ];
-  # };
+  users.users.jonah = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "networkmanager" ];
+    packages = with pkgs; [
+      tree
+    ];
+
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINmstJJ4/r4TdjiXrWMcwi9ukj4UaKgWP0/U5GupBmKL jonahcoh@umich.edu"
+    ];
+
+    initialPassword = "password";
+  };
 
   # programs.firefox.enable = true;
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
-  # environment.systemPackages = with pkgs; [
-  #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #   wget
-  # ];
+  environment.systemPackages = with pkgs; [
+    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    wget
+    git
+  ];
+
+  # Adding experimental features
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -87,7 +102,17 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    publish = {
+      enable = true;
+      addresses = true;
+      workstation = true;
+    };
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
