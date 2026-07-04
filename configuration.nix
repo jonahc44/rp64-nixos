@@ -116,6 +116,14 @@
     };
   };
 
+  # Optimizing RAM usage to avoid swap
+  zramSwap.enable = true;
+
+  services.journald.extraConfig = ''
+    SystemMaxUse=50M
+    MaxFileSec=7day
+  '';
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
