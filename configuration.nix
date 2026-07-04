@@ -117,7 +117,10 @@
   };
 
   # Optimizing RAM usage to avoid swap
-  zramSwap.enable = true;
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+  };
 
   services.journald.extraConfig = ''
     SystemMaxUse=50M
