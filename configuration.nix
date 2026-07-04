@@ -72,11 +72,10 @@
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINmstJJ4/r4TdjiXrWMcwi9ukj4UaKgWP0/U5GupBmKL jonahcoh@umich.edu"
     ];
-
-    initialPassword = "password";
   };
 
   nix.settings.trusted-users = [ "root" "jonah" ];
+  security.sudo.wheelNeedsPassword = false;
 
   # programs.firefox.enable = true;
 
