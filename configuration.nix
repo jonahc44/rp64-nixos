@@ -2,12 +2,13 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, impermanence, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      impermanence.nixosModules.impermanence
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -61,6 +62,7 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 
+  users.mutableUsers = false;
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jonah = {
     isNormalUser = true;
@@ -68,6 +70,8 @@
     packages = with pkgs; [
       tree
     ];
+
+    hashedPasswordFile = "/nix/persist/etc/secrets/jonah-password";
 
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINmstJJ4/r4TdjiXrWMcwi9ukj4UaKgWP0/U5GupBmKL jonahcoh@umich.edu"
@@ -86,6 +90,33 @@
     wget
     git
   ];
+
+  # Setting up ephemeral root
+  environment.persistence."/nix/persist" = {
+    hideMounts = true;
+    directories = [
+      "/var/log"
+      "/etc/NetworkManager/system-connections"
+    ];
+    files = [
+      "/etc/machine-id"
+      "/etc/ssh/ssh_host_rsa_key"
+      "/etc/ssh/ssh_host_rsa_key.pub"
+      "/etc/ssh/ssh_host_ed25519_key"
+      "/etc/ssh/ssh_host_ed25519_key.pub"
+    ];
+
+    users.jonah = {
+      directories = [
+        ".ssh"
+        "rp64-nixos"
+      ];
+      files = [
+        ".bash_history"
+        ".gitconfig"
+      ];
+    };
+  };
 
   # Adding experimental features
   nix.settings.experimental-features = [
