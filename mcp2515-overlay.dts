@@ -1,0 +1,35 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "pine64,rockpro64", "rockchip,rk3399";
+};
+
+/* Define the external oscillator for the MCP2515 */
+&{/} {
+    can_osc: can-osc {
+        compatible = "fixed-clock";
+        #clock-cells = <0>;
+        clock-frequency = <8000000>;
+    };
+};
+
+&spi1 {
+    status = "okay";
+    #address-cells = <1>;
+    #size-cells = <0>;
+
+    flash@0 {
+        status = "disabled";
+    };
+
+    can0: can@0 {
+        compatible = "microchip,mcp2515";
+        reg = <0>;
+        clocks = <&can_osc>;
+        interrupt-parent = <&gpio4>;
+        interrupts = <17 2>; /* RK_PD1 (17) with IRQ_TYPE_EDGE_FALLING (2) */
+        spi-max-frequency = <10000000>;
+        status = "okay";
+    };
+};
