@@ -6,6 +6,7 @@
   hardware.deviceTree = {
     enable = true;
     name = "rockchip/rk3399-rockpro64.dtb";
+    filter = "*rockpro64*";
     overlays = [
       {
         name = "mcp2515-can0";
