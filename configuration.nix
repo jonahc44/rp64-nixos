@@ -2,13 +2,13 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, impermanence, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      impermanence.nixosModules.impermanence
+      inputs.impermanence.nixosModules.impermanence
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -65,6 +65,17 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 
+  # sops config
+  sops = {
+    defaultSopsFile = ./secrets/secrets.yaml;
+    defaultSopsFormat = "yaml";
+    age.keyFile = "/var/lib/sops-nix/key.txt";
+
+    secrets."jonah_password" = {
+      neededForUsers = true;
+    };
+  };
+
   users.mutableUsers = false;
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jonah = {
@@ -74,7 +85,7 @@
       tree
     ];
 
-    hashedPasswordFile = "/nix/persist/etc/secrets/jonah-password";
+    hashedPasswordFile = config.sops.secrets."jonah_password".path;
 
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINmstJJ4/r4TdjiXrWMcwi9ukj4UaKgWP0/U5GupBmKL jonahcoh@umich.edu"
